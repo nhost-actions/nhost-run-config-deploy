@@ -1,0 +1,30 @@
+name: 'Nhost Run Configuration Deploy'
+description: 'Deploys configuration for Nhost Run Service'
+inputs:
+  configuration_file:
+    description: "Configuration file to deploy"
+    required: true
+  service_id:
+    description: "Service ID for the Nhost Run service to deploy to"
+    required: true
+  image:
+    description: "If specified, edit the configuration file and set this image before validating and deploying"
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Update image
+      if: ${{ inputs.IMAGE }}
+      run: |
+        nhost run config-edit-image \
+          --config ${{ inputs.configuration_file }} \
+          --image ${{ inputs.image }}
+      shell: bash
+    - run: |
+        nhost run config-validate \
+          --config ${{ inputs.configuration_file }} \
+          --service-id ${{ inputs.service_id }}
+        nhost run config-deploy \
+          --config ${{ inputs.configuration_file }} \
+          --service-id ${{ inputs.service_id }}
+      shell: bash
