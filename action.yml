@@ -21,7 +21,6 @@ runs:
           --image ${{ inputs.image }}
       shell: bash
     - run: |
-        if
         nhost run config-validate \
           --config ${{ inputs.configuration_file }} \
           --service-id ${{ inputs.service_id }}
